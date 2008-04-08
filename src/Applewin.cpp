@@ -66,6 +66,7 @@ DWORD     emulmsec          = 0;
 static DWORD emulmsec_frac  = 0;
 bool      g_bFullSpeed      = false;
 bool hddenabled = false;
+DWORD clockslot;
 static bool g_uMouseInSlot4 = false;	// not any mouse in slot4??--bb
 //char *MASTER_DISK="/opt/retropie/emulators/linapple/Master.dsk";
 char *Disk1="blank.dsk";
@@ -510,6 +511,9 @@ void LoadConfiguration ()
   if(LOAD(TEXT(REGVALUE_HDD_ENABLED), &dwTmp)) hddenabled = (bool) dwTmp;// after MemInitialize
 //	  HD_SetEnabled(dwTmp ? true : false);
 //  printf("g_bHD_Enabled = %d\n", g_bHD_Enabled);
+  LOAD(TEXT(REGVALUE_CLOCK_SLOT), &clockslot);
+  if (clockslot < 1 || clockslot > 7)
+    clockslot = 0;
 
   char *szHDFilename = NULL;
 
@@ -1046,6 +1050,8 @@ int main(int argc, char * lpCmdLine[])
 		HD_SetEnabled(hddenabled ? true : false);
 //printf("g_bHD_Enabled = %d\n", g_bHD_Enabled);
 
+		if (clockslot)
+			Clock_Insert(clockslot);
 		VideoInitialize();
 
 
